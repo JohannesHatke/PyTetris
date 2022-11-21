@@ -3,6 +3,7 @@ import getch
 from Game import GameState
 
 
+# ncurses
 # file responsible for launching tetris and displaying it on commandline
 parsekey = {"a": "LEFT",
         "d": "RIGHT",
