@@ -8,8 +8,8 @@ class Piece():
     def moveUp(self, y):
         newpos = []
         for pos in self.positions:
-            (x,y) = pos
-            newpos.append((x,+y))
+            (oldx,oldy) = pos
+            newpos.append((oldx,oldy+y))
     
     def move(self, direction) -> list:
         #return new positions after move or rotation in that direction
@@ -18,19 +18,20 @@ class Piece():
                 "LEFT": (-1,0),
                 "RIGHT":(1,0)
                 }
-        if direction in directions.keys():
+        if not direction in directions.keys():
             raise Exception("Piece.move(): invalid direction")
         output = []
         (x,y) = directions[direction]
-        for pos in positions:
-            (oldx,oldy)
-            output.append(oldx + x, oldy+y)
+        print(f"\n\nmoving {direction}")
+        for pos in self.positions:
+            (oldx,oldy) = pos
+            output.append((oldx + x, oldy+y))
 
         return output
         
     def updatePositions(self,positions:list[tuple]):
         #update new position
-        if len(position) != 4: raise Exception("Piece.updatePosition(): new positions too long")
+        if len(positions) != 4: raise Exception("Piece.updatePosition(): new positions too long")
         self.positions = positions
 
 
@@ -47,7 +48,13 @@ class GameState():
         self.leny = leny
         self.lenx = lenx
         self.field = [[None for j in range(lenx)] for i in range(leny+4)] #m = moving/ s=settled/ None = nothing
-        self.currentPiece = None
+        firstPiece = Square()
+        firstPiece.moveUp(10)
+        firstPiece.positions = [(2,0),(2,1),(1,0),(1,1)]
+        self.currentPiece = firstPiece
+        for pos in firstPiece.positions:
+            (x,y) = pos
+            self.field[y][x] = "m"
 
     def __repr__(self):
         c = u'\u2588'
@@ -62,6 +69,8 @@ class GameState():
                     output += s
                 else: output += "  "
             output += "|\n"
+
+        output += str(self.currentPiece.positions)
         return output
 
     def validMove(self, positions) -> bool:
@@ -77,9 +86,9 @@ class GameState():
 
     def moveCurrentPiece(self, direction):
         newPos = self.currentPiece.move(direction)
-        if(validMove(newPos)):
-            currentPiece.updatePositions(newPos)
-            for pos in positions:
+        if(self.validMove(newPos)):
+            self.currentPiece.updatePositions(newPos)
+            for pos in newPos:
                 (x,y) = pos
                 self.field[y][x] = "m"
     def fall(self):

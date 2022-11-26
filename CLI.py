@@ -1,30 +1,34 @@
 import time
-import getch 
 from Game import GameState
-
-
+from getkey import getkey, keys
 # ncurses
 # file responsible for launching tetris and displaying it on commandline
 parsekey = {"a": "LEFT",
         "d": "RIGHT",
         "s": "DOWN"}
+
 def gameLoop(runningG):
     running = True
     starttime = time.time()
-    fps = 10
+    fps = 30
     onceEvery = 1 / fps
+    direction = ""
     #kthread = KeyboardThread(my_callback)
+    key = getkey()
     while running:
-        char = getch.getch()
-        print(char)
-        #print(chr(27) + "[2J")
+        print(runningG.field)
+        if key in parsekey.keys():
+            direction = parsekey[key]
+        else:
+            direction = None
+        key = ""
+        #print(key)
+        print(chr(27) + "[2J")
+        print(runningG)
+        if direction:
+            runningG.moveCurrentPiece(direction)
 
-        #print(runningG)
-        print(1)
-        #if char == None:
         time.sleep(onceEvery -((time.time() - starttime) % onceEvery))
-        if char in parsekey.keys():
-            pass
 
 
 
